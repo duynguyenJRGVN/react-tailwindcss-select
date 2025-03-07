@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useMemo } from "react";
-
 import { DEFAULT_THEME } from "../constants";
 
 import DisabledItem from "./DisabledItem";
@@ -7,6 +6,8 @@ import GroupItem from "./GroupItem";
 import Item from "./Item";
 import { SelectContext } from "./SelectProvider";
 import { Option, Options as ListOption } from "./type";
+import {removeVietnameseTones} from "./Select";
+
 
 interface OptionsProps {
     list: ListOption;
@@ -26,11 +27,19 @@ const Options: React.FC<OptionsProps> = ({
     primaryColor = DEFAULT_THEME
 }) => {
     const { classNames } = useContext(SelectContext);
+
+    // Hàm dùng để lọc options theo text
     const filterByText = useCallback(() => {
+        // Chuẩn hóa chuỗi tìm kiếm
+        const normalizedSearch = removeVietnameseTones(text.toLowerCase());
+
+        // Lọc 1 item
         const filterItem = (item: Option) => {
-            return item.label.toLowerCase().indexOf(text.toLowerCase()) > -1;
+            const normalizedLabel = removeVietnameseTones(item.label.toLowerCase());
+            return normalizedLabel.includes(normalizedSearch);
         };
 
+        // Duyệt qua list, nếu là group thì lọc từng phần tử
         let result = list.map(item => {
             if ("options" in item) {
                 return {
@@ -41,6 +50,7 @@ const Options: React.FC<OptionsProps> = ({
             return item;
         });
 
+        // Loại bỏ những group không có option con
         result = result.filter(item => {
             if ("options" in item) {
                 return item.options.length > 0;
@@ -51,6 +61,7 @@ const Options: React.FC<OptionsProps> = ({
         return result;
     }, [text, list]);
 
+    // Nếu isMultiple, loại bỏ các item đã được chọn
     const removeValues = useCallback(
         (array: ListOption) => {
             if (!isMultiple) {
@@ -87,6 +98,7 @@ const Options: React.FC<OptionsProps> = ({
         [isMultiple, value]
     );
 
+    // Tạo danh sách cuối cùng để render
     const filterResult = useMemo(() => {
         return removeValues(filterByText());
     }, [filterByText, removeValues]);
@@ -94,7 +106,11 @@ const Options: React.FC<OptionsProps> = ({
     return (
         <div
             role="options"
-            className={classNames && classNames.list ? classNames.list : "max-h-72 overflow-y-auto"}
+            className={
+                classNames && classNames.list
+                    ? classNames.list
+                    : "max-h-72 overflow-y-auto"
+            }
         >
             {filterResult.map((item, index) => (
                 <React.Fragment key={index}>
@@ -106,7 +122,6 @@ const Options: React.FC<OptionsProps> = ({
                                     item={item}
                                 />
                             </div>
-
                             {index + 1 < filterResult.length && <hr className="my-1" />}
                         </>
                     ) : (
@@ -116,7 +131,6 @@ const Options: React.FC<OptionsProps> = ({
                     )}
                 </React.Fragment>
             ))}
-
             {filterResult.length === 0 && <DisabledItem>{noOptionsMessage}</DisabledItem>}
         </div>
     );
