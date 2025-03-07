@@ -6,8 +6,7 @@ import GroupItem from "./GroupItem";
 import Item from "./Item";
 import { SelectContext } from "./SelectProvider";
 import { Option, Options as ListOption } from "./type";
-import {removeVietnameseTones} from "./Select";
-
+import { removeVietnameseTones } from "./Select";
 
 interface OptionsProps {
     list: ListOption;
@@ -106,11 +105,7 @@ const Options: React.FC<OptionsProps> = ({
     return (
         <div
             role="options"
-            className={
-                classNames && classNames.list
-                    ? classNames.list
-                    : "max-h-72 overflow-y-auto"
-            }
+            className={classNames && classNames.list ? classNames.list : "max-h-72 overflow-y-auto"}
         >
             {filterResult.map((item, index) => (
                 <React.Fragment key={index}>

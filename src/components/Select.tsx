@@ -1,18 +1,21 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import {COLORS, DEFAULT_THEME, THEME_DATA} from "../constants";
+import { COLORS, DEFAULT_THEME, THEME_DATA } from "../constants";
 import useOnClickOutside from "../hooks/use-onclick-outside";
 
-import {ChevronIcon, CloseIcon} from "./Icons";
+import { ChevronIcon, CloseIcon } from "./Icons";
 import Options from "./Options";
 import SearchInput from "./SearchInput";
 import SelectProvider from "./SelectProvider";
 import Spinner from "./Spinner";
-import {Option, Options as ListOption, SelectProps} from "./type";
-
+import { Option, Options as ListOption, SelectProps } from "./type";
 
 export const removeVietnameseTones = (str: string) => {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D");
 };
 
 const Select: React.FC<SelectProps> = ({
@@ -156,7 +159,7 @@ const Select: React.FC<SelectProps> = ({
         }`;
 
         return classNames && classNames.menuButton
-            ? classNames.menuButton({isDisabled})
+            ? classNames.menuButton({ isDisabled })
             : defaultClass;
     }, [classNames, isDisabled, primaryColor]);
 
@@ -165,7 +168,7 @@ const Select: React.FC<SelectProps> = ({
             const baseClasse = "bg-gray-200 border rounded-sm flex space-x-1";
             const disabledClass = isDisabled ? "border-gray-500 px-1" : "pl-1";
             return classNames?.tagItem
-                ? classNames.tagItem({item, isDisabled})
+                ? classNames.tagItem({ item, isDisabled })
                 : `${baseClasse} ${disabledClass}`;
         },
         [classNames, isDisabled]
@@ -238,7 +241,7 @@ const Select: React.FC<SelectProps> = ({
                     <div className="flex flex-none items-center py-1.5">
                         {loading && (
                             <div className="px-1.5">
-                                <Spinner primaryColor={primaryColor}/>
+                                <Spinner primaryColor={primaryColor} />
                             </div>
                         )}
 
@@ -255,7 +258,7 @@ const Select: React.FC<SelectProps> = ({
                         )}
 
                         <div className="h-full">
-                            <span className="w-px h-full inline-block text-white bg-gray-300 text-opacity-0"/>
+                            <span className="w-px h-full inline-block text-white bg-gray-300 text-opacity-0" />
                         </div>
 
                         <div className="px-1.5">
@@ -287,7 +290,9 @@ const Select: React.FC<SelectProps> = ({
                                         typeof onSearchInputChange === "function"
                                     ) {
                                         onSearchInputChange(e);
-                                        const normalizedText: string = removeVietnameseTones(e.target.value);
+                                        const normalizedText: string = removeVietnameseTones(
+                                            e.target.value
+                                        );
                                         setInputValue(normalizedText);
                                     }
                                 }}
